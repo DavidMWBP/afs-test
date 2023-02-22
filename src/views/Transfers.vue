@@ -5,10 +5,10 @@
       >Search
       <input v-model="searchTerms" />
     </label>
-    <div>
       <button class="edit-btn" @click="updateTransfers">
         Update transfers
       </button>
+    <div class="transfersList">
       <transfer-row
         :key="transfer.transactionIdentifier"
         v-for="transfer in searchedTransfers"
@@ -85,5 +85,13 @@ export default class Transfers extends Vue {
 <style scoped lang="scss">
   .edit-btn {
     margin: 2rem;
+  }
+
+  .transfersList {
+    display: flex;
+    background-color: #535a74;
+    padding: 1rem;
+    flex-direction: column;
+    align-items: center;
   }
 </style>
