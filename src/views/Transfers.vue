@@ -54,8 +54,15 @@ export default class Transfers extends Vue {
   }
 
   updateTransfers(): void {
-    this.transfers.forEach((transfer) => {
-      transfer.forgottenProperty = `Important data: ${(Math.random() * 100000000).toString().slice(1, 8)}`;
+    /**
+     * The reason this method wasn't working is because Vue cannot detect property additions and deletions on plain JavaScript objects.
+     * By using Vue.set, we are notifying Vue to add the property forgottenProperty to the transfer object and at the same time triggering a reactivity update on the component, which in turn causes the component to re-render with the updated transfer objects.
+     */
+    this.transfers.forEach((transfer, index) => {
+      Vue.set(this.transfers, index, {
+        ...transfer,
+        forgottenProperty: `Important data: ${(Math.random() * 100000000).toString().slice(1, 8)}`,
+      });
     });
 
     this.transfers[0] = {
