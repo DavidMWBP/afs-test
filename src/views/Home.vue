@@ -6,8 +6,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { TableData } from "@/types/types";
+import {
+  Component,
+  Vue,
+} from 'vue-property-decorator';
+
+import { TableData } from '@/types/types';
 
 @Component
 export default class Home extends Vue {
@@ -38,24 +42,26 @@ export default class Home extends Vue {
 
   // mounted works fine if your ide complains about it
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  mounted() {
-    this.getData()
-      .then((data: TableData[]) => {
-        this.loading = true;
-        return data.map((dataItem: TableData) => {
-          return {
-            ...dataItem,
-            randomNumber: Math.random(),
-          };
-        });
-      })
-      .then((data: TableData[]) => {
-        this.tableData = data;
-        this.loading = false;
-      })
-      .catch((error) => {
-        console.log(error, "This is not good");
+  async mounted() {
+    try {
+      const data = await this.getData()
+      const totals = this.calculateTotals(data);
+
+      this.loading = true;  
+
+      const mappedData = data.map((dataItem: TableData) => {
+        return {
+          ...dataItem,
+          randomNumber: Math.random(),
+        };
       });
+
+      this.tableData = [...mappedData, totals];
+      this.loading = false;
+
+    } catch (error) {
+      console.log(error, "This is not good");
+    } 
   }
 
   async getData(): Promise<TableData[]> {
@@ -98,5 +104,18 @@ export default class Home extends Vue {
       },
     ];
   }
+
+  calculateTotals(data: TableData[]): TableData {
+    const totals: TableData = {
+      id: "totals",
+      name: "Total",
+      nominalValue: 0,
+      authorizedAmount: data.reduce((sum, item) => sum + Number(item.authorizedAmount), 0),
+      issuedAmount: data.reduce((sum, item) => sum + Number(item.issuedAmount), 0),
+      authorizedCapital: data.reduce((sum, item) => sum + Number(item.authorizedCapital), 0),
+      issuedCapital: data.reduce((sum, item) => sum + Number(item.issuedCapital), 0),
+      };
+      return totals;
+    }
 }
 </script>
