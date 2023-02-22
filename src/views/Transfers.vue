@@ -19,10 +19,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { Transaction } from "@/types/types";
-import TransferRow from "@/components/transferRow.vue";
-import transfers from "@/assets/data";
+import {
+  Component,
+  Vue,
+} from 'vue-property-decorator';
+
+import transfers from '@/assets/data';
+import TransferRow from '@/components/transferRow.vue';
+import { Transaction } from '@/types/types';
+
 @Component({
   name: "Transfers",
   components: { TransferRow },
@@ -37,7 +42,8 @@ export default class Transfers extends Vue {
       const searchArray: Transaction[] = [];
       this.transfers.forEach((transfer: Transaction) => {
         if (
-          transfer.type.toLowerCase().includes(this.searchTerms.toLowerCase())
+          transfer.type.toLowerCase().includes(this.searchTerms.toLowerCase()) ||
+          transfer.recordDate?.toLowerCase().includes(this.searchTerms.toLowerCase())
         ) {
           searchArray.push(transfer);
         }
@@ -75,8 +81,9 @@ export default class Transfers extends Vue {
   }
 }
 </script>
+
 <style scoped lang="scss">
-.edit-btn {
-  margin: 2rem;
-}
+  .edit-btn {
+    margin: 2rem;
+  }
 </style>
