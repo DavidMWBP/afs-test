@@ -2,6 +2,13 @@
   <div class="home">
     <h1>This is a table with some important data</h1>
     <b-table :data="tableData" :columns="columns"></b-table>
+    <button type="button" @click="showModal">Add security class</button>
+
+    <Modal
+      v-show="isModalVisible"
+      @close="closeModal"
+      @add-securityclass-item="addSecurityClassItem"
+    />
   </div>
 </template>
 
@@ -13,7 +20,13 @@ import {
 
 import { TableData } from '@/types/types';
 
-@Component
+import Modal from '../components/modal.vue';
+
+@Component({
+  components: {
+    Modal,
+  },
+})
 export default class Home extends Vue {
   tableData: TableData[] = [];
   columns = [
@@ -39,6 +52,7 @@ export default class Home extends Vue {
     },
   ];
   loading = false;
+  isModalVisible = false;
 
   // mounted works fine if your ide complains about it
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -47,7 +61,7 @@ export default class Home extends Vue {
       const data = await this.getData()
       const totals = this.calculateTotals(data);
 
-      this.loading = true;  
+      this.loading = true;
 
       const mappedData = data.map((dataItem: TableData) => {
         return {
@@ -61,8 +75,23 @@ export default class Home extends Vue {
 
     } catch (error) {
       console.log(error, "This is not good");
-    } 
+    }
   }
+  
+  showModal(): void {
+    this.isModalVisible = true;
+  }
+
+  closeModal(): void {
+    this.isModalVisible = false;
+  }
+
+  addSecurityClassItem(newSecurityClassItem: TableData): void {
+    this.tableData.pop() // Removes total row
+    this.tableData.push(newSecurityClassItem);
+    this.tableData.push(this.calculateTotals(this.tableData));
+    this.closeModal();
+}
 
   async getData(): Promise<TableData[]> {
     return [
