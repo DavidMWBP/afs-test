@@ -5,35 +5,35 @@
             <div class="field">
                 <label class="label">Security Class</label>
                 <div class="control">
-                <input v-model="formFields.name" class="input" type="text" placeholder="Enter Security Class">
+                <input v-model="name" class="input" type="text" placeholder="Enter Security Class">
                 </div>
             </div>
 
             <div class="field">
                 <label class="label">Authorized amount</label>
                 <div class="control">
-                <input v-model="formFields.authorizedAmount" class="input" type="number">
+                <input v-model="authorizedAmount" class="input" type="number">
                 </div>
             </div>
 
             <div class="field">
                 <label class="label">Issued amount</label>
                 <div class="control">
-                <input v-model="formFields.issuedAmount" class="input" type="number">
+                <input v-model="issuedAmount" class="input" type="number">
                 </div>
             </div>
 
             <div class="field">
                 <label class="label">Authorized Capital</label>
                 <div class="control">
-                <input v-model="formFields.authorizedCapital" class="input" type="number">
+                <input v-model="authorizedCapital" class="input" type="number">
                 </div>
             </div>
 
             <div class="field">
                 <label class="label">Issued capital</label>
                 <div class="control">
-                <input v-model="formFields.issuedCapital" class="input" type="number">
+                <input v-model="issuedCapital" class="input" type="number">
                 </div>
             </div>
 
@@ -52,41 +52,50 @@ import { Prop } from 'vue-property-decorator';
 import { TableData } from '@/types/types';
 
 @Component({name: "Modal"})
-    export default class Modal extends Vue {
-        @Prop() tableData!: TableData[];
-        formFields: TableData = {
-          id: '',
-          name: '',
-          nominalValue: 0,
-          authorizedAmount: 0,
-          issuedAmount: 0,
-          authorizedCapital: 0,
-          issuedCapital: 0
-        }
+  export default class Modal extends Vue {
+    @Prop() tableData!: TableData[];
 
-        // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-        async mounted() { 
-          console.log(this.tableData)
-        }
+    name = "";
+    nominalValue = 0;
+    authorizedAmount = 0;
+    issuedAmount = 0;
+    authorizedCapital = 0;
+    issuedCapital = 0;
 
-        onSubmitForm(): void {
-        this.formFields.id = this.formFields.name;
-        this.$emit("add-securityclass-item", this.formFields); // emit an event with the new item
-        this.formFields = {
-          id: "",
-          name: "",
-          nominalValue: 0,
-          authorizedAmount: 0,
-          issuedAmount: 0,
-          authorizedCapital: 0,
-          issuedCapital: 0,
-        }; 
+    get formFields(): TableData {
+      return {
+        id: "",
+        name: this.name,
+        nominalValue: this.nominalValue,
+        authorizedAmount: this.authorizedAmount,
+        issuedAmount: this.issuedAmount,
+        authorizedCapital: this.authorizedCapital,
+        issuedCapital: this.issuedCapital,
+      };
     }
-  
+    
+    resetFormFields(): void {
+      this.name = "";
+      this.nominalValue = 0;
+      this.authorizedAmount = 0;
+      this.issuedAmount = 0;
+      this.authorizedCapital = 0;
+      this.issuedCapital = 0;
     }
+
+    onSubmitForm(): void {
+      this.formFields.id = this.formFields.name;
+
+      if(this.formFields.name) {
+        this.$emit("add-security-class", this.formFields) // emit an event with the new item
+        this.resetFormFields();
+      }
+    } 
+
+  }
 </script>
 
-<style>
+<style scoped>
   .modal-backdrop {
     display: flex;
     position: fixed;

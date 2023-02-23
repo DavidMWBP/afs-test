@@ -7,7 +7,7 @@
     <Modal
       v-show="isModalVisible"
       @close="closeModal"
-      @add-securityclass-item="addSecurityClassItem"
+      @add-security-class="addSecurityClassItem"
     />
   </div>
 </template>
